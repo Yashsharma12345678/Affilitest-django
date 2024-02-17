@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Tester</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    {% csrf_token %}
+</head>
+<body>
+    <div id="results">
+        <p>{{ redirectionsData }}</p>
+        <ul id="linksList"></ul>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function testURL() {
+            var inputUrl = document.getElementById('url').value;
+            var csrfToken = getCookie('csrftoken');
+            
+            $.ajax({
+                url: '/',
+                type: 'POST',
+                data: {
+                    url: inputUrl,
+                    csrfmiddlewaretoken: csrfToken
+                },
+                success: function(response) {
+                    // Update the HTML with the received data
+                    var linksList = document.getElementById('linksList');
+                    linksList.innerHTML = response;
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
